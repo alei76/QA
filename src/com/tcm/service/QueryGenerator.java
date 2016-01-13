@@ -2,7 +2,7 @@ package com.tcm.service;
 
 import com.tcm.po.Answer;
 import com.tcm.po.Question;
-import com.tcm.util.SwitchTools;
+import com.tcm.po.WordIndexPair;
 import com.tcm.util.TemplateMatcher;
 
 import java.util.ArrayList;
@@ -79,8 +79,25 @@ public class QueryGenerator {
             }
         }
 
-        /*** 若之前领域分类识别为多类别（即不能具体判别） ***/
-        if(question.getQuestionDomain().equals("multi")) {
+        // 模式匹配
+        question.setQueryType("多实体-模式匹配");
+        Answer answer = TemplateMatcher.multiMatch(entityURIList, question);
+        if(answer != null) {
+            question.getAnswers().add(answer);
+            return;
+        }
+
+        // 领域知识
+        question.setQueryType("多实体-领域知识");
+        // 优先生成relation关系，不符合判断则不会产生
+        generateSRXorXRXSmartQuery(entityURIList, question);
+        // 若为空，表示没有自动生成
+        if(question.getAnswers().size() == 0) {
+
+        }
+
+     }
+        /*if(question.getQuestionDomain().equals("multi")) {
             // 判断为multi只是因为出现了多个领域的实体，如【麻黄当归防风的区别是什么】，但是其中有一个实体可以归为其他类型
             // 优先进行模板匹配
             question.setQueryType("多实体-模式匹配");
@@ -137,8 +154,7 @@ public class QueryGenerator {
             question.setQueryType("multi-single-auto");
             generateSRXorXRXSmartQuery(entityURIList, question);
 
-        }
-    }
+        }*/
 
     private static void singleEntityGenerate(Question question) {
 
@@ -220,36 +236,70 @@ public class QueryGenerator {
     }
 
     // TODO: 2015/12/20 理论上有18组
+
+    /***
+     * 按照领域知识生成
+     * @param entities
+     * @param question
+     */
     private static void generateSRXorXRXSmartQuery(List<String>  entities, Question question) {
+        // 获得关键词列表
+        String des = "";
+        List<WordIndexPair> list = question.getFeatures("ENTITY");
+        for(WordIndexPair wordIndexPair : list) {
+            des += " " + wordIndexPair.getWord();
+        }
         if(question.getQuestionDomain().equals("pre") && question.getDomainSet().contains("dis")) {
-            // 【单味药】治疗疾病关系的问题
+            //  【方剂】治疗疾病
             Answer answer = new Answer();
-            answer.setDescription("治疗疾病的方剂有");
-            answer.setQuery(treats(entities, "http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name"));
+            answer.setDescription("治疗疾病" + des + " 的方剂有：");
+            answer.setQuery(treatsXRO(entities, "http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name"));
+            answer.setParam(new String[]{"x"});
+            question.getAnswers().add(answer);
+        } else if(question.getQuestionDomain().equals("dis") && question.getDomainSet().contains("pre")) {
+            //  【疾病】被方剂治疗
+            Answer answer = new Answer();
+            answer.setDescription("方剂" + des + " 能治疗的中医疾病有：");
+            answer.setQuery(treatsSRX(entities, "http://zcy.ckcest.cn/tcm/dis/tcm/property#dis_tcm_basic.name_zh"));
+            answer.setParam(new String[]{"x"});
+            question.getAnswers().add(answer);
+            answer = new Answer();
+            answer.setDescription("方剂" + des + " 能治疗的西医疾病有：");
+            answer.setQuery(treatsSRX(entities, "http://zcy.ckcest.cn/tcm/dis/wm/property#dis_wm_basic.name_zh"));
             answer.setParam(new String[]{"x"});
             question.getAnswers().add(answer);
         } else if(question.getQuestionDomain().equals("pre") && question.getDomainSet().contains("med")) {
-            //  【方剂】包含单味药的问题
+            // 【方剂】包含单味药
             Answer answer = new Answer();
-            answer.setDescription("<方剂>包含单味药");
-            answer.setQuery(contains(entities, "http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name"));
+            answer.setDescription("包含单味药" + des + " 的方剂有：");
+            answer.setQuery(containsXRO(entities, "http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name"));
             answer.setParam(new String[]{"x"});
             question.getAnswers().add(answer);
-        } else if(question.getQuestionDomain().equals("chem") && question.getDomainSet().contains("med")) {
-            //  单味药包含【化合物】问题
+        } else if(question.getQuestionDomain().equals("med") && question.getDomainSet().contains("pre")) {
+            // 【单味药】被方剂含有
             Answer answer = new Answer();
-            answer.setDescription("单味药包含<化合物>");
-            answer.setQuery(containsReverse(entities, "http://zcy.ckcest.cn/tcm/chem/property#chem_cname.cname"));
+            answer.setDescription("方剂" + des + " 包含的单味药有：");
+            answer.setQuery(containsSRX(entities, "http://zcy.ckcest.cn/tcm/med/property#med_basic.med_name_zh"));
+            answer.setParam(new String[]{"x"});
+            question.getAnswers().add(answer);
+        } if(question.getQuestionDomain().equals("chem") && question.getDomainSet().contains("med")) {
+            // 【单味药】包含化合物
+            Answer answer = new Answer();
+            answer.setDescription("单味药" + des + " 包含的化合物有：");
+            answer.setQuery(containsSRX(entities, "http://zcy.ckcest.cn/tcm/chem/property#chem_cname.cname"));
             answer.setParam(new String[]{"x"});
             question.getAnswers().add(answer);
         }
     }
 
-    private static void generateSRXorXRXSmartQueryWithConstraints(List<String> entities, Question question) {
 
-    }
-
-    private static String treats(List<String> entites, String name_property) {
+    /***
+     * 知道疾病求方剂
+     * @param entites
+     * @param name_property
+     * @return
+     */
+    private static String treatsXRO(List<String> entites, String name_property) {
         String query = "SELECT ?x WHERE { ";
         for(String entity : entites) {
             query += "?y <http://zcy.ckcest.cn/tcm/relation#treats> " + addbreackets(entity) + ".";
@@ -258,7 +308,22 @@ public class QueryGenerator {
         return query;
     }
 
-    private static String contains(List<String> entites, String name_property) {
+    /***
+     * 知道方剂求疾病
+     * @param entites
+     * @param name_property
+     * @return
+     */
+    private static String treatsSRX(List<String> entites, String name_property) {
+        String query = "SELECT ?x WHERE { ";
+        for(String entity : entites) {
+            query += addbreackets(entity) +"<http://zcy.ckcest.cn/tcm/relation#treats> ?y.";
+        }
+        query += "?y <" + name_property + "> ?x. }";
+        return query;
+    }
+
+    private static String containsXRO(List<String> entites, String name_property) {
         String query = "SELECT ?x WHERE { ";
         for(String entity : entites) {
             query += "?y <http://zcy.ckcest.cn/tcm/relation#contains> " + addbreackets(entity) + ".";
@@ -267,7 +332,7 @@ public class QueryGenerator {
         return query;
     }
 
-    private static String containsReverse(List<String> entites, String name_property) {
+    private static String containsSRX(List<String> entites, String name_property) {
         String query = "SELECT ?x WHERE { ";
         for(String entity : entites) {
             query += addbreackets(entity) +"<http://zcy.ckcest.cn/tcm/relation#contains> ?y.";

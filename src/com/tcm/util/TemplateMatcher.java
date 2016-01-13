@@ -52,6 +52,12 @@ public class TemplateMatcher {
         }
     }
 
+    /***
+     * 有一组url
+     * @param entities
+     * @param question
+     * @return
+     */
     public static Answer multiMatch(List<String> entities, Question question) {
 
         // 获取对应参数个数的模板集
@@ -63,7 +69,6 @@ public class TemplateMatcher {
         for(Template template : templateList) {
             Answer answer = template.matchTemplate(question, entities);
             if(answer != null) {
-                answer.setDescription("");
                 return answer;
             }
         }
@@ -71,6 +76,11 @@ public class TemplateMatcher {
         return null;
     }
 
+    /***
+     * 多个url皆需生成
+     * @param entities
+     * @param question
+     */
     public static void singleMatch(List<String> entities, Question question) {
 
         List<Template> templateList = templates.get(question.getEntityCount());

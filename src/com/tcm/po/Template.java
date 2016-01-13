@@ -105,7 +105,7 @@ public class Template {
         String des = "";
         List<WordIndexPair> ens = question.getFeatures("ENTITY");
         for(int i = 0; i < ens.size(); ++i) {
-            description += ens.get(0).getWord() + " ";
+            des += ens.get(i).getWord() + " ";
         }
         des += "的 " + description;
         Answer answer = new Answer();
