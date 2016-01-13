@@ -10,12 +10,12 @@ import com.tcm.util.SpecificDic;
 public class ClassifierSets {
 
     /***
-     * 实体领域分类器，需要命名疑问词抽取和命名实体识别
+     * 实体领域分类器，需要命名疑问词抽取和命名实体识别以及启发式规则
      * @param question
      */
     public static void domainClassifier(Question question) {
 
-        // 首先查找疑问词[后位置]的强特征
+        // 首先查找{疑问词+后位置}的强特征
         for(WordIndexPair pair : question.getFeatures("WH")) {
             Integer index = pair.getIndex();
             if(((index + 1) < question.getLen()) && !SpecificDic.getDomainType(question.getSeg()[index + 1]).equals("none")) {
@@ -55,6 +55,11 @@ public class ClassifierSets {
                 return;
             }
         }
+    }
+
+
+    public static void questionValid(Question question) {
+
     }
 
 

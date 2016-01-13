@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by azurexsyl on 2015/12/16.
+ * 问句生成策略
  */
 public class QueryGenerator {
 
@@ -21,14 +22,19 @@ public class QueryGenerator {
     public static void gerenateQuery(Question question) {
         System.out.println("START!");
         if(question.getEntityCount() >= 2 ) {
-            System.out.println("多实体");
+            question.setAnswerType("多实体");
             multiEntityGenerate(question);
         } else if(question.getEntityCount() == 1) {
-            System.out.println("单实体");
+            question.setAnswerType("单实体");
             singleEntityGenerate(question);
         } else {
-            System.out.println("无实体");
+            question.setAnswerType("无实体");
             noneEntityGenerate(question);
+        }
+
+        // 如果没有生成答案，则要依靠机器学习生成
+        if(question.getAnswers().size() == 0) {
+
         }
     }
 
@@ -44,6 +50,7 @@ public class QueryGenerator {
         Integer entityCount = question.getEntityCount();
         // 从domain遍历，保证一个domain完整
         for(String domain : question.getDomainSet()) {
+            // 遍历一个domain的URI
             for(int i = 1; i <= entityCount; ++i) {
                 List<String> tmp = question.getEntityURI(domain + i);
                 if(tmp == null) {
@@ -59,7 +66,7 @@ public class QueryGenerator {
                 entityURIList.clear();
             }
         }
-        // 从词序遍历，保证词完整
+        // 从词序遍历，保证词完整，在计算获得的URI个数不足时实施
         if(entityURIList.size() != entityCount) {
             for(int i = 1; i <= entityCount; ++i) {
                 for(String domain : question.getDomainSet()) {
@@ -76,7 +83,7 @@ public class QueryGenerator {
         if(question.getQuestionDomain().equals("multi")) {
             // 判断为multi只是因为出现了多个领域的实体，如【麻黄当归防风的区别是什么】，但是其中有一个实体可以归为其他类型
             // 优先进行模板匹配
-            question.setQueryType("multi-multi-template");
+            question.setQueryType("多实体-模式匹配");
             Answer answer = TemplateMatcher.multiMatch(entityURIList, question);
             if(answer != null) {
                 question.getAnswers().add(answer);
@@ -85,9 +92,8 @@ public class QueryGenerator {
 
             // 否则要采取一般情况下的匹配，进行属性的组合,回答如【麻黄防风的功效是什么】【什么药可以咳嗽和感冒】
             // 优先进行跨领域查询，即relation
-            question.setQueryType("multi-multi-auto");
+            question.setQueryType("多实体-领域知识");
             Integer propertyCount = question.getPropertyCount();
-            // TODO: 2015/12/25 这里逻辑有些问题
             for(int i = 1; i <= entityCount; ++i) {
                 for (int j = 1; j <= propertyCount; ++j) {
                     if (question.getPropertySet().contains("relation")) {

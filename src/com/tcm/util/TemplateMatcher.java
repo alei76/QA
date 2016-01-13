@@ -36,7 +36,8 @@ public class TemplateMatcher {
                 String[] style = br.readLine().split(" ");
                 String[] param = br.readLine().split(" ");
                 String query = br.readLine();
-                Template template = new Template(paramCount, entity, style, param, query);
+                String description = br.readLine();
+                Template template = new Template(paramCount, entity, style, param, query, description);
                 if(templates.get(paramCount) == null) {
                     List<Template> list = new ArrayList<>();
                     list.add(template);
@@ -62,7 +63,7 @@ public class TemplateMatcher {
         for(Template template : templateList) {
             Answer answer = template.matchTemplate(question, entities);
             if(answer != null) {
-                answer.setDescription("多实体-自定义模板-答案顺序对应实体顺序");
+                answer.setDescription("");
                 return answer;
             }
         }

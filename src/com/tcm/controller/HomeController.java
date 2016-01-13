@@ -34,8 +34,6 @@ public class HomeController extends Controller{
         FeatureExtractor.featureExtraction(question);
         // 领域分类
         ClassifierSets.domainClassifier(question);
-        // 计算获得问答特征
-        ClassifierSets.answerTypeClassifier(question);
         question.show();
         // 生成问题查询的SPARQL
         QueryGenerator.gerenateQuery(question);

@@ -40,23 +40,6 @@ public class QAConfig extends JFinalConfig {
 
     @Override
     public void afterJFinalStart() {
-        /***
-         * 初始化分词器
-         */
-        /***
-         * code
-         */
-        System.out.println("Initializing Analyzer Finished");
 
-        /***
-         * 初始化同义词映射表
-         */
-        System.out.println("Initializing Synonym Finished");
-
-
-        /***
-         * 读取知识图谱
-         */
-        System.out.println("Reading RDFS Finished");
     }
 }

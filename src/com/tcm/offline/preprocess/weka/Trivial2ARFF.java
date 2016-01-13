@@ -33,7 +33,7 @@ public class Trivial2ARFF {
             Question question = new Question();
             question.setContent(line);
             FNLPTools.process(question);
-            FeatureExtractor.featureExtractionQAClassification(question);
+            FeatureExtractor.featureExtraction(question);
             ClassifierSets.domainClassifier(question);
             line = bufferedReader.readLine();
             //System.out.println(line);

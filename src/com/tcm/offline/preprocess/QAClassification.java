@@ -39,7 +39,7 @@ public class QAClassification {
             Question question = new Question();
             question.setContent(line);
             FNLPTools.process(question);
-            FeatureExtractor.featureExtractionQAClassification(question);
+            FeatureExtractor.featureExtraction(question);
             ClassifierSets.domainClassifier(question);
 
             switch (question.getQuestionDomain()) {

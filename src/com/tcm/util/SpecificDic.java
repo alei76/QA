@@ -14,17 +14,16 @@ public class SpecificDic {
 
     private static Set<String> triDic;
 
-    private static Map<String, String> domainDic;
-
     private static Set<String> allDic;
 
+    private static Map<String, String> domainDic;
 
     static {
 
         whDic = new HashSet<>();
         triDic = new HashSet<>();
-        domainDic = new HashMap<>();
         allDic = new HashSet<>();
+        domainDic = new HashMap<>();
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("./resources/dic/wh_vocabulary.dic"));

@@ -3,8 +3,8 @@ package com.tcm.po;
 import java.util.List;
 
 /**
- * 模板类
  * Created by azurexsyl on 2015/12/17.
+ * 模板类
  */
 public class Template {
 
@@ -13,13 +13,23 @@ public class Template {
     private String[] style;
     private String[] param;
     private String query;
+    private String description;
 
-    public Template(Integer paramCount, String[] entity, String[] style, String[] param, String query) {
+    public Template(Integer paramCount, String[] entity, String[] style, String[] param, String query, String description) {
         this.paramCount = paramCount;
         this.entity = entity;
         this.style = style;
         this.param = param;
         this.query = query;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getPramCount() {
@@ -92,13 +102,24 @@ public class Template {
         for(int i = 0; i < entities.size(); ++i) {
             resQuery = resQuery.replace(entity[i], constructResource(entities.get(i)));
         }
-
+        String des = "";
+        List<WordIndexPair> ens = question.getFeatures("ENTITY");
+        for(int i = 0; i < ens.size(); ++i) {
+            description += ens.get(0).getWord() + " ";
+        }
+        des += "的 " + description;
         Answer answer = new Answer();
         answer.setParam(param);
         answer.setQuery(resQuery);
+        answer.setDescription(des);
         return answer;
     }
 
+    /***
+     * 判断是否为实体
+     * @param e
+     * @return
+     */
     private boolean isEntity(String e) {
         for(String ee : entity) {
             if(e.equals(ee)) {
@@ -108,6 +129,12 @@ public class Template {
         return false;
     }
 
+    /***
+     * 获取序
+     * @param e
+     * @param question
+     * @return
+     */
     private Integer getWordIndex(String e, Question question) {
         String[] seg = question.getSeg();
         for(int i = 0; i < seg.length; ++i) {

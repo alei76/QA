@@ -32,7 +32,7 @@ public class QASegment {
             Question question = new Question();
             question.setContent(line);
             FNLPTools.process(question);
-            FeatureExtractor.featureExtractionQAClassification(question);
+            FeatureExtractor.featureExtraction(question);
             ClassifierSets.domainClassifier(question);
             String[] segments = question.getSeg();
 

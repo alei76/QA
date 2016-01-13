@@ -181,12 +181,13 @@ public class FeatureExtractor {
      * @param question
      */
     private static void extractContraint(Question question) {
-        // 限制特征只与Property相关，如{产地+北京}{产地+为+北京}
+        // 限制特征只与Property相关
         List<WordIndexPair> propertyList = question.getFeatures("PROPERTY");
         for(int i = 1; i < propertyList.size(); ++i){
             // 获取属性关键词
             WordIndexPair property = propertyList.get(i - 1);
             String word = property.getWord();
+            // 如{产地+北京}
             Integer ind = property.getIndex() + 1;
             if(ind < question.getLen()) {
                 if(question.getPos()[ind].equals("名词") || question.getPos()[ind].equals("地名") || question.getPos()[ind].equals("副词") || question.getPos()[ind].equals("形容词")) {
@@ -200,6 +201,7 @@ public class FeatureExtractor {
                     }
                 }
             }
+            // 如{产地+为+北京}
             ind += 1;
             if(ind < question.getLen()) {
                 if(question.getPos()[ind - 1].equals("介词") && (question.getPos()[ind].equals("名词") || question.getPos()[ind].equals("地名") || question.getPos()[ind].equals("副词") || question.getPos()[ind].equals("形容词"))) {
