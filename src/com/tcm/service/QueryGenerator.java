@@ -3,6 +3,7 @@ package com.tcm.service;
 import com.tcm.po.Answer;
 import com.tcm.po.Question;
 import com.tcm.po.WordIndexPair;
+import com.tcm.util.SwitchTools;
 import com.tcm.util.TemplateMatcher;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ public class QueryGenerator {
             question.setAnswerType("无实体");
             noneEntityGenerate(question);
         }
-
         // 如果没有生成答案，则要依靠机器学习生成
         if(question.getAnswers().size() == 0) {
 
@@ -78,7 +78,6 @@ public class QueryGenerator {
                 }
             }
         }
-
         // 模式匹配
         question.setQueryType("多实体-模式匹配");
         Answer answer = TemplateMatcher.multiMatch(entityURIList, question);
@@ -86,75 +85,34 @@ public class QueryGenerator {
             question.getAnswers().add(answer);
             return;
         }
-
         // 领域知识
         question.setQueryType("多实体-领域知识");
-        // 优先生成relation关系，不符合判断则不会产生
-        generateSRXorXRXSmartQuery(entityURIList, question);
-        // 若为空，表示没有自动生成
-        if(question.getAnswers().size() == 0) {
-
+        // 优先生成relation关系，不符合判断则不会产生，但是对于【麻黄由什么组成】这种非确定问题不能自动生成
+        if(!question.getQuestionDomain().equals("multi")) {
+            generateSRXorXRXSmartQuery(entityURIList, question);
         }
-
-     }
-        /*if(question.getQuestionDomain().equals("multi")) {
-            // 判断为multi只是因为出现了多个领域的实体，如【麻黄当归防风的区别是什么】，但是其中有一个实体可以归为其他类型
-            // 优先进行模板匹配
-            question.setQueryType("多实体-模式匹配");
-            Answer answer = TemplateMatcher.multiMatch(entityURIList, question);
-            if(answer != null) {
-                question.getAnswers().add(answer);
-                return;
-            }
-
-            // 否则要采取一般情况下的匹配，进行属性的组合,回答如【麻黄防风的功效是什么】【什么药可以咳嗽和感冒】
-            // 优先进行跨领域查询，即relation
-            question.setQueryType("多实体-领域知识");
+        // 若为空，表示没有自动生成，并且不再考虑关系
+        if(question.getAnswers().size() == 0) {
             Integer propertyCount = question.getPropertyCount();
             for(int i = 1; i <= entityCount; ++i) {
                 for (int j = 1; j <= propertyCount; ++j) {
-                    if (question.getPropertySet().contains("relation")) {
-                        // relation 最高优先权
-                        List<String> pros = question.getPropertyURI("relation" + j);
-                        if(pros == null)
+                    List<String> pros = question.getPropertyURI("property" + j);
+                    if(pros == null)
+                        continue;
+                    for(String pro : pros) {
+                        /*if(!SwitchTools.isSameDomain(entityURIList.get(i - 1), pro)) {
                             continue;
-                        for(String pro : pros) {
-                            Answer sanswer = new Answer();
-                            sanswer.setDescription("<" + question.getFeatures("ENTITY").get(i - 1).getWord() + ">" + " <R:" + question.getFeatures("PROPERTY").get(j - 1).getWord() + ">");
-                            sanswer.setQuery(generateSRXSmartQuery(entityURIList.get(i - 1) , pro, question));
-                            sanswer.setParam(new String[]{"x"});
-                            question.getAnswers().add(sanswer);
-                        }
-                    } else {
-                        // 其他关系具有其次优先级，即property优先级
-                        List<String> pros = question.getPropertyURI("property" + j);
-                        if(pros == null)
-                            continue;
-                        for(String pro : pros) {
-                            if(!SwitchTools.isSameDomain(entityURIList.get(i - 1), pro)) {
-                                continue;
-                            }
-                            Answer sanswer = new Answer();
-                            // TODO: 2015/12/18 可以深化，如在 Description 内添加编号，如返回结果内增加超链接，反正有唯一键关联
-                            // TODO: 2015/12/20 其实也可以通过判断实体类别加关系解决，但是数据不是对应唯一实体
-                            sanswer.setDescription(question.getFeatures("ENTITY").get(i - 1).getWord() + "的"  + question.getFeatures("PROPERTY").get(j - 1).getWord() + "如下：");
-
-                            sanswer.setQuery(generateSPXSmartQuery(entityURIList.get(i - 1) , pro, question));
-                            sanswer.setParam(new String[]{"x"});
-                            question.getAnswers().add(sanswer);
-                        }
+                        }*/
+                        Answer sanswer = new Answer();
+                        sanswer.setDescription(question.getFeatures("ENTITY").get(i - 1).getWord() + "的"  + question.getFeatures("PROPERTY").get(j - 1).getWord() + "如下：");
+                        sanswer.setQuery(generateSPXSmartQuery(entityURIList.get(i - 1) , pro, question));
+                        sanswer.setParam(new String[]{"x"});
+                        question.getAnswers().add(sanswer);
                     }
                 }
             }
-
-            // TODO: 2015/12/20 若连属性都没有，需要另行处理，即添加规则
-        } else {
-            // 若是【多实体】且标签不为multi，有三种种问题的形式：1.类型相同的单一实体【麻黄三七的属性】放到上边 ;2.类型不同的单一实体【什么药可以治疗咳嗽与感冒|什么方剂包含半夏和大黄|麻黄和防风含有那些化合物】;3.类型不同且无实体【什么药性味为寒】放到下边
-            // 若分到此类，则默认认为是求二者的关系，无需谓词判断
-            question.setQueryType("multi-single-auto");
-            generateSRXorXRXSmartQuery(entityURIList, question);
-
-        }*/
+        }
+     }
 
     private static void singleEntityGenerate(Question question) {
 
@@ -166,52 +124,40 @@ public class QueryGenerator {
             }
         }
 
-        //【典型问题-为什么 吃了 麻黄 不舒服】
+        // 模式匹配
+        question.setQueryType("模式匹配");
         TemplateMatcher.singleMatch(entityURIList, question);
 
         // 有结果则退出
         if(question.getAnswers().size() != 0)
             return;
 
-        // 【典型问题-什么药可以治疗咳嗽】
-        if(!question.getQuestionDomain().equals("multi") && !question.getDomainSet().contains(question.getQuestionDomain())) {
-            // 什么药可以治疗咳嗽|没有constraint，可以归一到智能生成问题】
-            for(String entity : entityURIList) {
+        question.setQueryType("领域知识");
+        // 尝试使用关系直接生成
+        if(!question.getQuestionDomain().equals("multi")) {
+            for (String entity : entityURIList) {
                 List<String> e = new ArrayList<>();
                 e.add(entity);
-                question.setQueryType("multi-single-auto");
                 generateSRXorXRXSmartQuery(e, question);
             }
-            return;
         }
 
-
-        question.setQueryType("multi-single-auto");
-        if(question.getPropertyCount() > 0) {
-            // 单实体有两种形式【治疗咳嗽的药是什么|没有constraint，可以归一到智能生成问题】【产地北京的治疗咳嗽的药是什么|一个constraint，一个实体】[治疗麻黄的药还可以治疗什么|难！】
-            // 【麻黄的功效是什么|这类问题一般没有限制】
-            // 智能问句生成，添加限制
-            Integer count = question.getPropertyCount();
-            for(int ii = 1; ii <= entityURIList.size(); ++ii) {
-                for(int i = 1; i <= count; ++i) {
+        if(question.getAnswers().size() == 0) {
+            Integer propertyCount = question.getPropertyCount();
+            for(int i = 1; i <= entityURIList.size(); ++i) {
+                for(int j = 1; j <= propertyCount; ++j) {
                     List<String> pros = question.getPropertyURI("property" + i);
-                    if(pros != null) {
-                        for(String pro : pros) {
-                            Answer sanswer = new Answer();
-                            //sanswer.setDescription("<" + entity + ">" + " <P:" + question.getFeatures("PROPERTY").get(i - 1).getWord() + ">");
-                            sanswer.setDescription(question.getFeatures("ENTITY").get(0).getWord() + "的" + question.getFeatures("PROPERTY").get(i - 1).getWord() + "如下：");
-
-                            sanswer.setQuery(generateSPXSmartQuery(entityURIList.get(ii - 1), pro, question));
-                            sanswer.setParam(new String[]{"x"});
-                            question.getAnswers().add(sanswer);
-                        }
+                    if(pros == null)
+                        continue;
+                    for(String pro : pros) {
+                        Answer sanswer = new Answer();
+                        sanswer.setDescription(question.getFeatures("ENTITY").get(0).getWord() + "的" + question.getFeatures("PROPERTY").get(j - 1).getWord() + "如下：");
+                        sanswer.setQuery(generateSPXSmartQuery(entityURIList.get(i - 1), pro, question));
+                        sanswer.setParam(new String[]{"x"});
+                        question.getAnswers().add(sanswer);
                     }
                 }
             }
-
-        } else {
-            // 无属性，需要按照机器学习的方法分类,【并且添加限制？】
-
         }
     }
 
@@ -225,14 +171,20 @@ public class QueryGenerator {
         }
     }
 
+    private static void machineLearningGenerate(Question q) {
 
-    // TODO: 2015/12/20 需要判断很复杂，此处只是西医
-    private static String generateSRXSmartQuery(String entity, String property, Question question) {
-        return "SELECT ?x WHERE { "  + addbreackets(entity) + addbreackets(property) + "?y. ?y <http://zcy.ckcest.cn/tcm/dis/tcm/property#dis_tcm_basic.name_zh> ?x.}";
     }
 
     private static String generateSPXSmartQuery(String entity, String property, Question question) {
-        return "SELECT ?x WHERE { "  + addbreackets(entity) + addbreackets(property) + "?x.}";
+        if(SwitchTools.isRelation(property)) {
+            if(SwitchTools.getURIDomain(entity).equals("med") && SwitchTools.getURIDomain(property).equals("relation")) {
+                return "SELECT ?x WHERE { " + addbreackets(entity) + addbreackets(property) + "?y. { { ?y <http://zcy.ckcest.cn/tcm/dis/tcm/property#dis_tcm_basic.name_zh> ?x } UNION { ?y <http://zcy.ckcest.cn/tcm/dis/wm/property#dis_wm_basic.name_zh> ?x } } }";
+            }else {
+                return "";
+            }
+        }else {
+            return "SELECT ?x WHERE { " + addbreackets(entity) + addbreackets(property) + "?x.}";
+        }
     }
 
     // TODO: 2015/12/20 理论上有18组
@@ -282,7 +234,7 @@ public class QueryGenerator {
             answer.setQuery(containsSRX(entities, "http://zcy.ckcest.cn/tcm/med/property#med_basic.med_name_zh"));
             answer.setParam(new String[]{"x"});
             question.getAnswers().add(answer);
-        } if(question.getQuestionDomain().equals("chem") && question.getDomainSet().contains("med")) {
+        } else if(question.getQuestionDomain().equals("chem") && question.getDomainSet().contains("med")) {
             // 【单味药】包含化合物
             Answer answer = new Answer();
             answer.setDescription("单味药" + des + " 包含的化合物有：");

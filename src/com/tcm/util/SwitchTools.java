@@ -32,6 +32,20 @@ public class SwitchTools {
         return null;
     }
 
+
+    public static boolean isRelation(String uri) {
+        if(uri.contains("relation"))
+            return true;
+        else
+            return false;
+    }
+
+    /***
+     * 判断URI是否合法
+     * @param uri1
+     * @param uri2
+     * @return
+     */
     public static boolean isSameDomain(String uri1, String uri2) {
         if(uri1.contains("http://zcy.ckcest.cn/tcm/med") && uri2.contains("http://zcy.ckcest.cn/tcm/med")) {
             return true;
@@ -51,6 +65,8 @@ public class SwitchTools {
         }else if (uri1.contains("http://zcy.ckcest.cn/tcm/ori/animal") && uri2.contains("http://zcy.ckcest.cn/tcm/ori/animal")) {
             return true;
         }else if (uri1.contains("http://zcy.ckcest.cn/tcm/ori/mineral") && uri2.contains("http://zcy.ckcest.cn/tcm/ori/mineral")) {
+            return true;
+        } else if(uri1.contains("relation")) {
             return true;
         }
         return false;

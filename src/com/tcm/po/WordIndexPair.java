@@ -22,7 +22,6 @@ public class WordIndexPair {
         this.word = word;
     }
 
-
     public Integer getIndex() {
         return index;
     }

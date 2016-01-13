@@ -141,7 +141,8 @@ public class FeatureExtractor {
                 propertyCount++;
                 for (String uri : uris) {
                     System.out.println(uri);
-                    String domain = SwitchTools.getURIDomain(uri);
+                    //String domain = SwitchTools.getURIDomain(uri);
+                    String domain = "property";
                     question.putPropertySet(domain);
                     question.putPropertyURI(domain + propertyCount, uri);
                 }
