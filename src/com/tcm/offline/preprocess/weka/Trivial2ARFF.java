@@ -34,7 +34,7 @@ public class Trivial2ARFF {
             question.setContent(line);
             FNLPTools.process(question);
             FeatureExtractor.featureExtraction(question);
-            ClassifierSets.domainClassifier(question);
+            ClassifierSets.domainClassifierHeuristic(question);
             line = bufferedReader.readLine();
             //System.out.println(line);
             String key = line.substring(0, 1);

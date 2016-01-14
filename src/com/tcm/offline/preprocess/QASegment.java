@@ -33,7 +33,7 @@ public class QASegment {
             question.setContent(line);
             FNLPTools.process(question);
             FeatureExtractor.featureExtraction(question);
-            ClassifierSets.domainClassifier(question);
+            ClassifierSets.domainClassifierHeuristic(question);
             String[] segments = question.getSeg();
 
             String sent = "" + segments[0];

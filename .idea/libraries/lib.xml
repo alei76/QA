@@ -9,6 +9,7 @@
       <root url="jar://$USER_HOME$/.ideaLibSources/fnlp-core-2.1-sources.jar!/" />
       <root url="jar://$USER_HOME$/.ideaLibSources/jena-core-2.13.0-sources.jar!/" />
       <root url="jar://$USER_HOME$/.ideaLibSources/jena-arq-2.13.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ideaLibSources/weka-stable-3.6.6-sources.jar!/" />
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/web/WEB-INF/lib" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/web/WEB-INF/lib" recursive="false" type="SOURCES" />

@@ -33,7 +33,7 @@ public class PredictShow {
             double class_value = classifier.classifyInstance(test_instance);
             int predict_result = (int) class_value;
             if (predict_result != real_label && predict_result == 0) {
-                System.out.println("ps:" + predict_result  + "       rr:" + real_label);
+                System.out.println("ps:" + predict_result  + "rr:" + real_label);
                 System.out.println(j + 1);
             }
         }

@@ -171,8 +171,9 @@ public class QueryGenerator {
         }
     }
 
-    private static void machineLearningGenerate(Question q) {
-
+    private static void machineLearningGenerate(Question question) {
+            // 领域分类
+            ClassifierSets.domainClassifierML(question);
     }
 
     private static String generateSPXSmartQuery(String entity, String property, Question question) {

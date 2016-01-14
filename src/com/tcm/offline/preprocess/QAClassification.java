@@ -40,7 +40,7 @@ public class QAClassification {
             question.setContent(line);
             FNLPTools.process(question);
             FeatureExtractor.featureExtraction(question);
-            ClassifierSets.domainClassifier(question);
+            ClassifierSets.domainClassifierHeuristic(question);
 
             switch (question.getQuestionDomain()) {
                 case "med":
