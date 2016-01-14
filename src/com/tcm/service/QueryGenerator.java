@@ -146,7 +146,7 @@ public class QueryGenerator {
             Integer propertyCount = question.getPropertyCount();
             for(int i = 1; i <= entityURIList.size(); ++i) {
                 for(int j = 1; j <= propertyCount; ++j) {
-                    List<String> pros = question.getPropertyURI("property" + i);
+                    List<String> pros = question.getPropertyURI("property" + j);
                     if(pros == null)
                         continue;
                     for(String pro : pros) {
