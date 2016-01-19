@@ -14,11 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <!-- Site Properities -->
     <title>QA - SYS</title>
-    <link rel="stylesheet" type="text/css" href="/pages/semanticui/semantic.css">
-    <script src="/pages/semanticui/semantic.js"></script>
-    <script src="/pages/js/jquery.min.js"></script>
-    <script src="/pages/js/iframe.js"></script>
-    <script src="/pages/js/qa.js"></script>
+    <link rel="stylesheet" type="text/css" href="pages/semanticui/semantic.css">
+    <script src="pages/semanticui/semantic.js"></script>
+    <script src="pages/js/jquery.min.js"></script>
+    <script src="pages/js/iframe.js"></script>
+    <script src="pages/js/qa.js"></script>
 
     <title>中草药智能问答系统接口测试</title>
     <style type="text/css">

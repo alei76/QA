@@ -11,16 +11,15 @@ import java.io.BufferedWriter;
 public class WC2ARFF {
 
     public static void main(String[] args) throws Exception {
-        BufferedReader bufferedReader = FileIO.getBufferedReader("./resources/dataset/tcm_qa/classifier2/vec/wc_hhh_sp_bow_w1.txt");
-        BufferedReader bufferedReader2 = FileIO.getBufferedReader("./resources/dataset/tcm_qa/classifier2/data/qa.txt");
-
-        BufferedWriter bufferedWriter = FileIO.getBufferedWriter("./resources/dataset/tcm_qa/classifier2/arff/wc_hhh_sp_bow_w1.arff");
+        BufferedReader bufferedReader = FileIO.getBufferedReader("./resources/dataset/tcm_qa/classifier3/vec/sp.txt");
+        BufferedReader bufferedReader2 = FileIO.getBufferedReader("./resources/dataset/tcm_qa/classifier3/data/seg_qa_gxzz2.txt");
+        BufferedWriter bufferedWriter = FileIO.getBufferedWriter("./resources/dataset/tcm_qa/classifier3/arff/sp.arff");
 
         bufferedWriter.write("@relation c1" + "\n");
-        for (int i = 1; i <= 3052 + 4; ++i) {
+        for (int i = 1; i <= 3052; ++i) {
             bufferedWriter.write("@attribute " + "A" + i + " numeric" + "\n");
         }
-        bufferedWriter.write("@attribute class {药, 方, 病}" + "\n");
+        bufferedWriter.write("@attribute class {treat, function, attention}" + "\n");
         bufferedWriter.write("@data" + "\n");
 
         String line = "";
@@ -29,12 +28,13 @@ public class WC2ARFF {
         while ((sline = bufferedReader.readLine()) != null) {
             bufferedReader2.readLine();
             line = bufferedReader2.readLine();
-            if (line.startsWith("药"))
-                bufferedWriter.write(sline + ",药" + "\n");
-            else if (line.startsWith("方"))
-                bufferedWriter.write(sline + ",方" + "\n");
-            else if(line.startsWith("病"))
-                bufferedWriter.write(sline + ",病" + "\n");
+            System.out.println(++count);
+            if (line.startsWith("治疗"))
+                bufferedWriter.write(sline + ",treat" + "\n");
+            else if (line.startsWith("功效"))
+                bufferedWriter.write(sline + ",function" + "\n");
+            else if(line.startsWith("副作用"))
+                bufferedWriter.write(sline + ",attention" + "\n");
         }
 
         bufferedWriter.close();

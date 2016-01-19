@@ -13,7 +13,7 @@ function search() {
     console.log(question);
     $.ajax({
         dataType: "json",
-        url: "/ask",
+        url: "./ask",
         data: {"question" : question,
                 "category" : "rdf"},
         success: getAnswersSCB

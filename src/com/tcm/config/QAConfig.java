@@ -9,7 +9,7 @@ import com.jfinal.render.ViewType;
 public class QAConfig extends JFinalConfig {
 
     // 项目根路径
-    private String projectRoot = "/";
+    final private String projectRoot = "/";
 
     @Override
     public void configConstant(Constants me) {

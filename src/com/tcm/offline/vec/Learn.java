@@ -104,7 +104,7 @@ public class Learn {
                     if (entry == null) {
                         continue;
                     }
-                    // The subsampling randomly discards frequent words while
+                    // TagStat subsampling randomly discards frequent words while
                     // keeping the ranking same
                     if (sample > 0) {
                         double ran = (Math.sqrt(entry.freq

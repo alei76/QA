@@ -28,7 +28,7 @@ public class TemplateMatcher {
         templates = new HashMap<>();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./resources/templates/templates.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "templates/templates.txt"));
             String line = "";
             while ((line = br.readLine()) != null) {
                 Integer paramCount = Integer.valueOf(line);

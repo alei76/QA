@@ -23,7 +23,6 @@ public class JenaTest {
         model.read(in, null);
         System.out.println(model.size());
         String queryString = " SELECT ?x  WHERE {?y <http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name> ?x. ?y <http://zcy.ckcest.cn/tcm/relation#treats> ?z .?z  <http://zcy.ckcest.cn/tcm/dis/wm/property#dis_diagnosis.symptom> ?t. FILTER regex(?t, '肥胖') }";
-        //String queryString = "SELECT ?x  WHERE {?x  <http://zcy.ckcest.cn/tcm/dis/wm/property#dis_diagnosis.symptom> ?z. FILTER regex(?z, '肥胖') }";
         Query query = QueryFactory.create(queryString);
         QueryExecution qe = QueryExecutionFactory.create(query, model);
         ResultSet results = qe.execSelect();

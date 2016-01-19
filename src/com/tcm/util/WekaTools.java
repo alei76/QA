@@ -22,7 +22,7 @@ public class WekaTools {
 
     static {
         try {
-            File file = new File("./resources/dataset/model/wc_sp_w2_instances.arff");
+            File file = new File(Const.RESOURCE_BASE_DIR + "/dataset/model/wc_sp_w2_instances.arff");
             ArffLoader loader = new ArffLoader();
             loader.setFile(file);
             instances = loader.getDataSet();
@@ -40,16 +40,16 @@ public class WekaTools {
      */
     public static int classifyDomain(Instance instance) throws Exception{
         instance.setDataset(instances);
-        Classifier classifier = (Classifier) weka.core.SerializationHelper.read("./resources/dataset/model/bow_sp_svm.model");
+        Classifier classifier = (Classifier) weka.core.SerializationHelper.read(Const.RESOURCE_BASE_DIR + "dataset/model/bow_sp_svm.model");
         double class_value = classifier.classifyInstance(instance);
         int predict_result = (int) class_value;
         return predict_result;
     }
 
-    public static int classifyPreProperty(Instance instance) throws Exception {
-        Classifier classifier = (Classifier) weka.core.SerializationHelper.read("./resources/dataset/model/bow_sp_svm.model");
+    /*public static int classifyPreProperty(Instance instance) throws Exception {
+        Classifier classifier = (Classifier) weka.core.SerializationHelper.read(Const.RESOURCE_BASE_DIR + "dataset/model/bow_sp_svm.model");
         double class_value = classifier.classifyInstance(instance);
         int predict_result = (int) class_value;
         return predict_result;
-    }
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.tcm.offline.preprocess.feature;
 
+import com.tcm.util.Const;
 import com.tcm.util.FileIO;
 
 import java.io.BufferedReader;
@@ -15,16 +16,14 @@ public class WordCount {
 
     public static void main(String[] args) throws Exception{
 
-        String classifier = "2";
+        String classifier = "3";
 
-        int d = 4;
         // 读取词典
-        BufferedReader dicReader = FileIO.getBufferedReader(".\\resources\\dataset\\tcm_qa\\dic\\words_4w_10.txt");
-
+        BufferedReader dicReader = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "dataset\\tcm_qa\\dic\\words_4w_10.txt");
         // 创建输入流对象, 分词后的对象
-        BufferedReader bufferedReader = FileIO.getBufferedReader(".\\resources\\dataset\\tcm_qa\\classifier" + classifier +"\\data\\seg_qa_hhh_sp_bow_w1.txt");
+        BufferedReader bufferedReader = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "dataset\\tcm_qa\\classifier" + classifier +"\\data\\seg_qa_spsp.txt");
         // 创建输出流对象, 词数向量
-        BufferedWriter bufferedWriter = FileIO.getBufferedWriter(".\\resources\\dataset\\tcm_qa\\classifier" + classifier +"\\vec\\wc_hhh_sp_bow_w1.txt");
+        BufferedWriter bufferedWriter = FileIO.getBufferedWriter(Const.RESOURCE_BASE_DIR + "dataset\\tcm_qa\\classifier" + classifier +"\\vec\\sp.txt");
 
         Map<String, Integer> map = new HashMap<>();
 
@@ -35,10 +34,6 @@ public class WordCount {
         while ((line = dicReader.readLine()) != null) {
             map.put(line, count++);
         }
-        map.put("medmedmed", count++);
-        map.put("preprepre", count++);
-        map.put("disdisdis", count++);
-        map.put("nonnonnon", count++);
 
         while((line = bufferedReader.readLine()) != null) {
             Integer[] vec = new Integer[map.keySet().size()];
@@ -49,11 +44,7 @@ public class WordCount {
             for(String word : words) {
                 if(map.get(word) != null) {
                     int i = vec[map.get(word)];
-                    if(word.equals("medmedmed") || word.equals("preprepre") || word.equals("disdisdis") || word.equals("nonnonnon")) {
-                        vec[map.get(word)] = i + 10;
-                    }else {
-                        vec[map.get(word)] = i + 1;
-                    }
+                    vec[map.get(word)] = i + 1;
                 }
             }
 
@@ -62,6 +53,7 @@ public class WordCount {
                 result += "," + vec[i];
             }
             bufferedWriter.write(result + "\n");
+            bufferedReader.readLine();
         }
         bufferedWriter.close();
 

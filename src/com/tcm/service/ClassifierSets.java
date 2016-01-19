@@ -90,7 +90,6 @@ public class ClassifierSets {
                 // 病
                 question.setQuestionDomain("dis");
             }
-
         }catch (Exception e) {
             e.printStackTrace();
         }

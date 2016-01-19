@@ -20,6 +20,10 @@ public class SpecificDic {
 
     private static Map<String, Integer> corpusDic;
 
+    private static Set<String> gxDic;
+
+    private static Set<String> zzDic;
+
     static {
 
         whDic = new HashSet<>();
@@ -27,32 +31,42 @@ public class SpecificDic {
         allDic = new HashSet<>();
         domainDic = new HashMap<>();
         corpusDic = new HashMap<>();
+        gxDic = new HashSet<>();
+        zzDic = new HashSet<>();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./resources/dic/wh_vocabulary.dic"));
+            BufferedReader br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "dic/wh_vocabulary.dic"));
             String line = "";
             while ((line = br.readLine()) != null) {
                 whDic.add(line);
             }
-            br = new BufferedReader(new FileReader("./resources/dic/trivial_vocabulary.dic"));
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/trivial_vocabulary.dic"));
             while ((line = br.readLine()) != null) {
                 triDic.add(line);
             }
-            br = new BufferedReader(new FileReader("./resources/dic/type_vocabulary.dic"));
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/type_vocabulary.dic"));
             while((line = br.readLine()) != null) {
                 String[] kv = line.split(" ");
                 domainDic.put(kv[0], kv[1]);
             }
-            br = new BufferedReader(new FileReader("./resources/dic/qa_dic.txt"));
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/qa_dic.txt"));
             while ((line = br.readLine()) != null) {
                 if(line.equals("***************"))
                     break;
                 allDic.add(line);
             }
-            br = new BufferedReader(new FileReader("./resources/dic/words_4w_10.txt"));
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/words_4w_10.txt"));
             int count = 0;
             while ((line = br.readLine()) != null) {
                 corpusDic.put(line, count++);
+            }
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/function.txt"));
+            while ((line = br.readLine()) != null) {
+                gxDic.add(line);
+            }
+            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "dic/treat.txt"));
+            while ((line = br.readLine()) != null) {
+                zzDic.add(line);
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -90,6 +104,32 @@ public class SpecificDic {
      */
     public static boolean specific(String word) {
         if(allDic.contains(word)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /***
+     * 判断一个词是否在词典内 {功效词典}
+     * @param word
+     * @return
+     */
+    public static boolean isGX(String word) {
+        if(gxDic.contains(word)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /***
+     * 判断一个词是否在词典内 {主治词典}
+     * @param word
+     * @return
+     */
+    public static boolean isZZ(String word) {
+        if(zzDic.contains(word)) {
             return true;
         }else{
             return false;

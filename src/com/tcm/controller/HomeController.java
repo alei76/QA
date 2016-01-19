@@ -33,12 +33,12 @@ public class HomeController extends Controller{
         // 抽取特征
         FeatureExtractor.featureExtraction(question);
         //question.show();
-        ClassifierSets.domainClassifierML(question);
+        ClassifierSets.domainClassifierHeuristic(question);
         // 生成问题查询的SPARQL
         QueryGenerator.gerenateQuery(question);
         //QueryFilter
         // 运行问题查询语句
-        //QueryExecutor.execute(question);
+        QueryExecutor.execute(question);
         AnswerRewriter.deleteEmptyAnswer(question);
         AnswerRewriter.generateHTML(question);
 

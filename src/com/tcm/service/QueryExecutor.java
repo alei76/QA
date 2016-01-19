@@ -9,6 +9,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 import com.tcm.po.Answer;
 import com.tcm.po.Question;
+import com.tcm.util.Const;
 
 import java.io.InputStream;
 import java.util.List;
@@ -20,7 +21,7 @@ public class QueryExecutor {
 
     private static Model model = null;
     private static InputStream in = null;
-    private static String dir = "E:\\IDEA\\jfinal\\resources\\final_rdfs\\new_3180259.rdfs";
+    private static String dir = Const.RESOURCE_BASE_DIR + "/final_rdfs/new_3180259.rdfs";
 
     static {
         System.out.println("RDF Initialize");

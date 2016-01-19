@@ -1,6 +1,7 @@
 package com.tcm.service;
 
 import com.tcm.po.Question;
+import com.tcm.util.Const;
 import org.fnlp.ml.types.Dictionary;
 import org.fnlp.nlp.cn.tag.CWSTagger;
 import org.fnlp.nlp.cn.tag.POSTagger;
@@ -20,9 +21,9 @@ public class FNLPTools {
 
     static {
         try {
-            cwsTagger = new CWSTagger("./resources/models/seg.m", new Dictionary("./resources/dic/qa_dic.txt"));
-            posTagger = new POSTagger(cwsTagger, "./resources/models/pos.m", new Dictionary("./resources/dic/qa_dic.txt"), true);
-            jointParser = new JointParser("./resources/models/dep.m");
+            cwsTagger = new CWSTagger(Const.RESOURCE_BASE_DIR +"/models/seg.m", new Dictionary(Const.RESOURCE_BASE_DIR + "/dic/qa_dic.txt"));
+            posTagger = new POSTagger(cwsTagger, Const.RESOURCE_BASE_DIR + "/models/pos.m", new Dictionary(Const.RESOURCE_BASE_DIR + "/dic/qa_dic.txt"), true);
+            jointParser = new JointParser(Const.RESOURCE_BASE_DIR +"/models/dep.m");
 
         }catch (Exception e) {
             e.printStackTrace();

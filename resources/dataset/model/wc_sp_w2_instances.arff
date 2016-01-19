@@ -3051,5 +3051,5 @@
 @attribute A3050 numeric
 @attribute A3051 numeric
 @attribute A3052 numeric
-@attribute class {药, 方, 病}
+@attribute class {0, 1, 2}
 @data
