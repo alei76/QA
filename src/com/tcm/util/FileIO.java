@@ -8,9 +8,9 @@ import java.io.*;
  */
 public class FileIO {
 
-    public static BufferedReader getBufferedReader (String str) throws FileNotFoundException {
-        Reader reader = new FileReader(str);
-        return new BufferedReader(reader);
+    public static BufferedReader getBufferedReader (String str) throws Exception {
+        //Reader reader = new FileReader(str);
+        return new BufferedReader(new InputStreamReader(new FileInputStream(str), "UTF-8"));
     }
 
     public static BufferedWriter getBufferedWriter (String str) throws IOException {

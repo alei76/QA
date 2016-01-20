@@ -5,7 +5,6 @@ import com.tcm.po.Question;
 import com.tcm.po.Template;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ public class TemplateMatcher {
         templates = new HashMap<>();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "templates/templates.txt"));
+            BufferedReader br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "templates/templates.txt");
             String line = "";
             while ((line = br.readLine()) != null) {
                 Integer paramCount = Integer.valueOf(line);

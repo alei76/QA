@@ -10,7 +10,7 @@ import com.tcm.service.*;
 public class HomeController extends Controller{
 
     /***
-     * 返回主页
+     * 返回主页【
      */
     public void index() {
         renderJsp("index.jsp");
@@ -34,6 +34,7 @@ public class HomeController extends Controller{
         FeatureExtractor.featureExtraction(question);
         //question.show();
         ClassifierSets.domainClassifierHeuristic(question);
+        question.show();
         // 生成问题查询的SPARQL
         QueryGenerator.gerenateQuery(question);
         //QueryFilter

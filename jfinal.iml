@@ -27,9 +27,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jetty-server-8.1.8" level="project" />
-    <orderEntry type="library" name="lucene-analyzers-common-4.0.0" level="project" />
-    <orderEntry type="library" name="lucene-codecs-4.0.0" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="module-library">
+      <library name="libs">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/web/WEB-INF/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/web/WEB-INF/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/web/WEB-INF/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/web/WEB-INF/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>

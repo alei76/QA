@@ -1,5 +1,6 @@
 package com.tcm.config;
 
+
 import com.jfinal.config.*;
 import com.jfinal.render.ViewType;
 

@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="jfinal:Web exploded">
+    <output-path>$PROJECT_DIR$/web/WEB-INF/classes/artifacts/jfinal_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="jfinal/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="javaee-facet-classes" facet="jfinal/web/Web" />
+          <element id="module-output" name="jfinal" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="libs" module-name="jfinal" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

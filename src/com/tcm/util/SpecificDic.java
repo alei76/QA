@@ -1,8 +1,10 @@
 package com.tcm.util;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by azurexsyl on 2015/12/14.
@@ -35,36 +37,37 @@ public class SpecificDic {
         zzDic = new HashSet<>();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "dic/wh_vocabulary.dic"));
+            BufferedReader br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "dic/wh_vocabulary.txt");
             String line = "";
             while ((line = br.readLine()) != null) {
+                System.out.println(line);
                 whDic.add(line);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/trivial_vocabulary.dic"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/trivial_vocabulary.txt");
             while ((line = br.readLine()) != null) {
                 triDic.add(line);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/type_vocabulary.dic"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/type_vocabulary.txt");
             while((line = br.readLine()) != null) {
                 String[] kv = line.split(" ");
                 domainDic.put(kv[0], kv[1]);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/qa_dic.txt"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/qa_dic.txt");
             while ((line = br.readLine()) != null) {
                 if(line.equals("***************"))
                     break;
                 allDic.add(line);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/words_4w_10.txt"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/words_4w_10.txt");
             int count = 0;
             while ((line = br.readLine()) != null) {
                 corpusDic.put(line, count++);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR  + "dic/function.txt"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/function.txt");
             while ((line = br.readLine()) != null) {
                 gxDic.add(line);
             }
-            br = new BufferedReader(new FileReader(Const.RESOURCE_BASE_DIR + "dic/treat.txt"));
+            br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "dic/treat.txt");
             while ((line = br.readLine()) != null) {
                 zzDic.add(line);
             }

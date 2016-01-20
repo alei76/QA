@@ -21,7 +21,6 @@ public class QueryGenerator {
      * @param question
      */
     public static void gerenateQuery(Question question) {
-        System.out.println("START!");
         if(question.getEntityCount() >= 2 ) {
             question.setAnswerType("多实体");
             multiEntityGenerate(question);
@@ -125,13 +124,15 @@ public class QueryGenerator {
         }
 
         // 模式匹配
+        System.out.println("尝试模式匹配");
         question.setQueryType("模式匹配");
         TemplateMatcher.singleMatch(entityURIList, question);
-
+        System.out.println("模式匹配结果：" + question.getAnswers().size());
         // 有结果则退出
         if(question.getAnswers().size() != 0)
             return;
 
+        System.out.println("尝试领域知识-关系");
         question.setQueryType("领域知识");
         // 尝试使用关系直接生成
         if(!question.getQuestionDomain().equals("multi")) {
@@ -141,6 +142,7 @@ public class QueryGenerator {
                 generateSRXorXRXSmartQuery(e, question);
             }
         }
+        System.out.println("尝试领域知识-关系：" + question.getAnswers().size());
 
         if(question.getAnswers().size() == 0) {
             Integer propertyCount = question.getPropertyCount();
