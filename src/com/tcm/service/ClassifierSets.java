@@ -35,11 +35,12 @@ public class ClassifierSets {
             }
         }
 
-        // 再次查找助词[后置位]的强特征
+        // 再次查找助词{后置位}的强特征
         for(int i = 0; i < question.getLen(); ++i) {
             if(question.getPos().equals("助词结构")) {
                 if((i + 1) < question.getLen() && !SpecificDic.getDomainType(question.getSeg()[i + 1]).equals("none")) {
                     String domain = SpecificDic.getDomainType(question.getSeg()[i + 1]);
+                    // 设置领域值
                     question.setQuestionDomain(domain);
                     return;
                 }
@@ -82,17 +83,58 @@ public class ClassifierSets {
             int result = WekaTools.classifyDomain(instance);
             if(result == 0) {
                 // 药
+                System.out.println("med");
                 question.setQuestionDomain("med");
             } else if(result == 1) {
-                // 方
+                // 方，已经有相关模型
+                System.out.println("pre");
                 question.setQuestionDomain("pre");
             } else if(result == 2) {
                 // 病
+                System.out.println("dis");
                 question.setQuestionDomain("dis");
             }
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    /***
+     * 领域分类，要计算BoW+SP特征
+     * @param question
+     */
+    public static void prePropertyClassifierML(Question question) {
+        double[] vec = new double[SpecificDic.getCorpusDicLength()];
+        for(int i = 0; i < vec.length; ++i)
+            vec[i] = 0.0;
+        String[] words = question.getSeg();
+        for(String word : words) {
+            if(SpecificDic.getWordNum(word) != -1) {
+                vec[SpecificDic.getWordNum(word)] += 1;
+                if(SpecificDic.isGX(word)) {
+                    vec[SpecificDic.getWordNum(word)] += 1;
+                }
+                if(SpecificDic.isZZ(word)) {
+                    vec[SpecificDic.getWordNum(word)] += 1;
+                }
+            }
+        }
+
+        Instance instance = new Instance(1, vec);
+        try {
+            int result = WekaTools.classifyPreProperty(instance);
+            if(result == 0) {
+                System.out.println("治疗");
+                question.setAnswerType("治疗");
+            } else if(result == 1) {
+                System.out.println("功效");
+                question.setQuestionDomain("功效");
+            } else if(result == 2) {
+                System.out.println("副作用");
+                question.setQuestionDomain("副作用");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

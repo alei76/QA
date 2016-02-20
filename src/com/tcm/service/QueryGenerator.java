@@ -33,13 +33,13 @@ public class QueryGenerator {
         }
         // 如果没有生成答案，则要依靠机器学习生成
         if(question.getAnswers().size() == 0) {
-
+            machineLearningGenerate(question);
         }
     }
 
 
     /***
-     * 问题中存在多个实体，例如【麻黄、防风的功效是什么|单领域】【什么药可以治疗咳嗽与干嘛|跨领域】
+     * 问题中存在多个实体，例如【麻黄、防风的功效是什么|单领域】【什么药可以治疗咳嗽与感冒|跨领域】
      * @param question
      */
     private static void multiEntityGenerate(Question question) {
@@ -78,6 +78,7 @@ public class QueryGenerator {
             }
         }
         // 模式匹配
+        System.out.println("尝试【模式匹配】");
         question.setQueryType("多实体-模式匹配");
         Answer answer = TemplateMatcher.multiMatch(entityURIList, question);
         if(answer != null) {
@@ -85,11 +86,13 @@ public class QueryGenerator {
             return;
         }
         // 领域知识
+        System.out.println("尝试【领域知识-关系】");
         question.setQueryType("多实体-领域知识");
-        // 优先生成relation关系，不符合判断则不会产生，但是对于【麻黄由什么组成】这种非确定问题不能自动生成
         if(!question.getQuestionDomain().equals("multi")) {
+            //若非multi，则说明类型统一，是关系的可能性很大
             generateSRXorXRXSmartQuery(entityURIList, question);
         }
+        System.out.println("尝试【领域知识-属性】");
         // 若为空，表示没有自动生成，并且不再考虑关系
         if(question.getAnswers().size() == 0) {
             Integer propertyCount = question.getPropertyCount();
@@ -99,9 +102,6 @@ public class QueryGenerator {
                     if(pros == null)
                         continue;
                     for(String pro : pros) {
-                        /*if(!SwitchTools.isSameDomain(entityURIList.get(i - 1), pro)) {
-                            continue;
-                        }*/
                         Answer sanswer = new Answer();
                         sanswer.setDescription(question.getFeatures("ENTITY").get(i - 1).getWord() + "的"  + question.getFeatures("PROPERTY").get(j - 1).getWord() + "如下：");
                         sanswer.setQuery(generateSPXSmartQuery(entityURIList.get(i - 1) , pro, question));
@@ -113,6 +113,10 @@ public class QueryGenerator {
         }
      }
 
+    /***
+     * 只存在一个实体
+     * @param question
+     */
     private static void singleEntityGenerate(Question question) {
 
         // 优先采取模板匹配,计算所有的实体情况
@@ -124,15 +128,14 @@ public class QueryGenerator {
         }
 
         // 模式匹配
-        System.out.println("尝试模式匹配");
+        System.out.println("尝试【模式匹配】");
         question.setQueryType("模式匹配");
         TemplateMatcher.singleMatch(entityURIList, question);
-        System.out.println("模式匹配结果：" + question.getAnswers().size());
         // 有结果则退出
         if(question.getAnswers().size() != 0)
             return;
 
-        System.out.println("尝试领域知识-关系");
+        System.out.println("尝试【领域知识-关系】");
         question.setQueryType("领域知识");
         // 尝试使用关系直接生成
         if(!question.getQuestionDomain().equals("multi")) {
@@ -142,8 +145,7 @@ public class QueryGenerator {
                 generateSRXorXRXSmartQuery(e, question);
             }
         }
-        System.out.println("尝试领域知识-关系：" + question.getAnswers().size());
-
+        System.out.println("尝试【领域知识-属性】");
         if(question.getAnswers().size() == 0) {
             Integer propertyCount = question.getPropertyCount();
             for(int i = 1; i <= entityURIList.size(); ++i) {
@@ -163,19 +165,36 @@ public class QueryGenerator {
         }
     }
 
+    /***
+     * 没有实体存在，这种情况下都尝试调用分类器
+     * @param question
+     */
     private static void noneEntityGenerate(Question question) {
-        // 无实体，且domain为none
         if(question.getQuestionDomain().equals("none")) {
-            //不能回答，或者信息太少
+
         } else {
-            // 需要提取限制对
-            // 类似【背部出汗怎么治疗|单味药】【产地北京的药|单味药】
+
         }
     }
 
+    /***
+     * 以机器学习方式生成问句
+     * @param question
+     */
     private static void machineLearningGenerate(Question question) {
             // 领域分类
-            ClassifierSets.domainClassifierML(question);
+        ClassifierSets.domainClassifierML(question);
+        if(question.getQuestionDomain().equals("pre")) {
+            System.out.println("尝试【机器学习-方剂】");
+            ClassifierSets.prePropertyClassifierML(question);
+            if(question.getAnswerType().equals("治疗")) {
+
+            } else if(question.getAnswerType().equals("功效")) {
+
+            } else if(question.getAnswerType().equals("副作用")) {
+
+            }
+        }
     }
 
     private static String generateSPXSmartQuery(String entity, String property, Question question) {

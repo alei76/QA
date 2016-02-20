@@ -46,10 +46,16 @@ public class WekaTools {
         return predict_result;
     }
 
-    /*public static int classifyPreProperty(Instance instance) throws Exception {
-        Classifier classifier = (Classifier) weka.core.SerializationHelper.read(Const.RESOURCE_BASE_DIR + "dataset/model/bow_sp_svm.model");
+    /***
+     * 方剂分类：0-treat；2-function；3-attention
+     * @param instance
+     * @return
+     * @throws Exception
+     */
+    public static int classifyPreProperty(Instance instance) throws Exception {
+        Classifier classifier = (Classifier) weka.core.SerializationHelper.read(Const.RESOURCE_BASE_DIR + "dataset/model/wc_gxzz.model");
         double class_value = classifier.classifyInstance(instance);
         int predict_result = (int) class_value;
         return predict_result;
-    }*/
+    }
 }

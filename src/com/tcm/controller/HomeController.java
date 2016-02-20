@@ -20,7 +20,6 @@ public class HomeController extends Controller{
      * 返回问题答案
      */
     public void ask () {
-
         // 获取请求值
         String category = getPara("category");
         String content = getPara("question");
@@ -32,17 +31,16 @@ public class HomeController extends Controller{
         FNLPTools.process(question);
         // 抽取特征
         FeatureExtractor.featureExtraction(question);
-        //question.show();
+        // 采用启发式规则对问题进行分类
         ClassifierSets.domainClassifierHeuristic(question);
         question.show();
         // 生成问题查询的SPARQL
         QueryGenerator.gerenateQuery(question);
-        //QueryFilter
+        QueryFilter.filter(question);
         // 运行问题查询语句
         QueryExecutor.execute(question);
         AnswerRewriter.deleteEmptyAnswer(question);
         AnswerRewriter.generateHTML(question);
-
         renderJson("result", question.getResult());
     }
 }
