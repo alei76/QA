@@ -10,7 +10,7 @@ import com.tcm.service.*;
 public class HomeController extends Controller{
 
     /***
-     * 返回主页【
+     * 返回主页
      */
     public void index() {
         renderJsp("index.jsp");
@@ -36,10 +36,13 @@ public class HomeController extends Controller{
         question.show();
         // 生成问题查询的SPARQL
         QueryGenerator.gerenateQuery(question);
+        // 过滤无效问题
         QueryFilter.filter(question);
         // 运行问题查询语句
         QueryExecutor.execute(question);
-        AnswerRewriter.deleteEmptyAnswer(question);
+        // 删除空问题
+        AnswerFilter.deleteEmptyAnswer(question);
+        // 生成HTML答案
         AnswerRewriter.generateHTML(question);
         renderJson("result", question.getResult());
     }

@@ -182,7 +182,8 @@ public class QueryGenerator {
      * @param question
      */
     private static void machineLearningGenerate(Question question) {
-            // 领域分类
+        // 领域分类
+        question.setQueryType("机器学习");
         ClassifierSets.domainClassifierML(question);
         if(question.getQuestionDomain().equals("pre")) {
             System.out.println("尝试【机器学习-方剂】");

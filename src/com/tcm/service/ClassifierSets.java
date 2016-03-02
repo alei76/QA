@@ -100,7 +100,7 @@ public class ClassifierSets {
     }
 
     /***
-     * 领域分类，要计算BoW+SP特征
+     * 方剂属性分类，要计算BoW+SP特征
      * @param question
      */
     public static void prePropertyClassifierML(Question question) {
@@ -128,10 +128,10 @@ public class ClassifierSets {
                 question.setAnswerType("治疗");
             } else if(result == 1) {
                 System.out.println("功效");
-                question.setQuestionDomain("功效");
+                question.setAnswerType("功效");
             } else if(result == 2) {
                 System.out.println("副作用");
-                question.setQuestionDomain("副作用");
+                question.setAnswerType("副作用");
             }
         }catch (Exception e) {
             e.printStackTrace();

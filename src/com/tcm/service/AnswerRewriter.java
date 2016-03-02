@@ -3,7 +3,6 @@ package com.tcm.service;
 import com.tcm.po.Answer;
 import com.tcm.po.Question;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,16 +10,7 @@ import java.util.List;
  */
 public class AnswerRewriter {
 
-    public static void deleteEmptyAnswer(Question question) {
-        List<Answer> answers = question.getAnswers();
-        List<Answer> newAnswers = new ArrayList<>();
-        for(Answer answer : answers) {
-            if(answer.getOris().size() != 0) {
-                newAnswers.add(answer);
-            }
-        }
-        question.setAnswers(newAnswers);
-    }
+
 
     public static void generateHTML(Question question) {
         String result = "";
