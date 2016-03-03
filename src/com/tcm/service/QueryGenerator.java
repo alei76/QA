@@ -193,7 +193,35 @@ public class QueryGenerator {
             } else if(question.getAnswerType().equals("功效")) {
 
             } else if(question.getAnswerType().equals("副作用")) {
-
+                // 查找所有方剂实体
+                List<String> preURIList = new ArrayList<>();
+                Integer entityCount = question.getEntityCount();
+                String domain = "pre";
+                for(int i = 1; i <= entityCount; ++i) {
+                    List<String> tmp = question.getEntityURI(domain + i);
+                    if(tmp == null) {
+                        break;
+                    } else {
+                        preURIList.add(tmp.get(0));
+                    }
+                }
+                int count = preURIList.size();
+                String[] params = new String[count];
+                Answer answer = new Answer();
+                answer.setDescription("方剂的禁忌");
+                String query = "SELECT ";
+                for(int i = 0; i < count; ++i) {
+                    query += "?x" + i + " ";
+                    params[i] = "x" + i;
+                }
+                query += "WHERE { ";
+                for(int i = 0; i < count; ++i) {
+                    query += addbreackets(preURIList.get(i)) + " <http://zcy.ckcest.cn/tcm/pre/property#pre_function.attention> ?x" + i + ". ";
+                }
+                query += "}";
+                answer.setQuery(query);
+                answer.setParam(params);
+                question.getAnswers().add(answer);
             }
         }
     }

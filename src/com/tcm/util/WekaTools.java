@@ -53,6 +53,7 @@ public class WekaTools {
      * @throws Exception
      */
     public static int classifyPreProperty(Instance instance) throws Exception {
+        instance.setDataset(instances);
         Classifier classifier = (Classifier) weka.core.SerializationHelper.read(Const.RESOURCE_BASE_DIR + "dataset/model/wc_gxzz.model");
         double class_value = classifier.classifyInstance(instance);
         int predict_result = (int) class_value;

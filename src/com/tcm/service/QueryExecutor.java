@@ -46,6 +46,7 @@ public class QueryExecutor {
                 for (String s : answer.getParam()) {
                     str += qs.get(s) + " XXX ";
                 }
+                System.out.println(str);
                 answer.addOris(str);
             }
         }

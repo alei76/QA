@@ -21,10 +21,20 @@ public class AnswerRewriter {
         }
         for(Answer answer : answers) {
             result += answer.getDescription() + "<br/>";
+            boolean multiParam = false;
+            if(answer.getParam().length > 1) {
+                multiParam = true;
+            }
             for(String s : answer.getOris()) {
                 String ss[] = s.split(" XXX ");
-                for(String sss : ss) {
-                    result += sss;
+                if(multiParam) {
+                    for (String sss : ss) {
+                        result += sss + "<br/>";
+                    }
+                }else {
+                    for (String sss : ss) {
+                        result += sss;
+                    }
                 }
                 result += "<br/>";
             }
