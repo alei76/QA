@@ -36,7 +36,7 @@ public class FNLPTools {
      */
     public static void process(Question question) {
 
-        // 在此处调用HNLP，获得分词后的结果
+        // 在此处调用HNLP，获得分词后的结果,返回带空格的分词结果
         String content = HNLPTools.segment(question.getContent());
 
         String[][] s1 = posTagger.tag2Array(content);

@@ -183,7 +183,7 @@ public class FeatureExtractor {
 
 
     /***
-     * 限制特征提取
+     * 限制特征提取，实际没用
      *
      * @param question
      */

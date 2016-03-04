@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class HNLPTools {
 
-
     /***
      * 分词模块
      * @param sent 问题文本

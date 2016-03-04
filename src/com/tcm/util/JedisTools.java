@@ -31,7 +31,7 @@ public class JedisTools {
         delKey("膏");
         delKey("茶");
         delKey("10");*/
-        Set<String> set = getURI("禁忌");
+        Set<String> set = getURI("药");
         for(String s : set) {
             System.out.println(s);
         }

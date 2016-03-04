@@ -10,8 +10,6 @@ import java.util.List;
  */
 public class AnswerRewriter {
 
-
-
     public static void generateHTML(Question question) {
         String result = "";
         List<Answer> answers = question.getAnswers();

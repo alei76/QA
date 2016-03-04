@@ -3,6 +3,7 @@ package com.tcm.service;
 import com.tcm.po.Answer;
 import com.tcm.po.Question;
 import com.tcm.po.WordIndexPair;
+import com.tcm.util.SpecificDic;
 import com.tcm.util.SwitchTools;
 import com.tcm.util.TemplateMatcher;
 
@@ -188,10 +189,28 @@ public class QueryGenerator {
         if(question.getQuestionDomain().equals("pre")) {
             System.out.println("尝试【机器学习-方剂】");
             ClassifierSets.prePropertyClassifierML(question);
-            if(question.getAnswerType().equals("治疗")) {
-
+            if(question.getAnswerType().equals("主治")) {
+                // 治疗首先获得治疗的描述
+                List<String> treatDes = new ArrayList<>();
+                for(String treat : question.getSeg()) {
+                    if(SpecificDic.isZZ(treat)) {
+                        treatDes.add(treat);
+                    }
+                }
+                System.out.println("症状描述词" + treatDes.size() + "个");
+                // 生成第一个查询SPARQL，方剂主治{描述}
+                Answer answer = new Answer();
+                answer.setDescription("以下方剂主治以上症状");
+                String query = "SELECT ?x WHERE {?y <http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name> ?x. ?y <http://zcy.ckcest.cn/tcm/pre/property#pre_function.treat> ?z.";
+                for(String t : treatDes) {
+                    query += " FILTER regex(?z, '" + t + "' ).";
+                }
+                query += "}";
+                answer.setQuery(query);
+                answer.setParam(new String[]{"x"});
+                question.getAnswers().add(answer);
             } else if(question.getAnswerType().equals("功效")) {
-
+                // 功效的问题，许多都是XXX的功效，已经先前基于领域知识的方法过滤
             } else if(question.getAnswerType().equals("副作用")) {
                 // 查找所有方剂实体
                 List<String> preURIList = new ArrayList<>();

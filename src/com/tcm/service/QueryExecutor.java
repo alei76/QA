@@ -46,7 +46,6 @@ public class QueryExecutor {
                 for (String s : answer.getParam()) {
                     str += qs.get(s) + " XXX ";
                 }
-                System.out.println(str);
                 answer.addOris(str);
             }
         }
@@ -54,7 +53,7 @@ public class QueryExecutor {
     }
 
     public static void main(String[] args) {
-        String query = "SELECT ?x WHERE {  <http://zcy.ckcest.cn/tcm/med#1064>  <http://zcy.ckcest.cn/tcm/relation#treats> ?y. { { ?y <http://zcy.ckcest.cn/tcm/dis/tcm/property#dis_tcm_basic.name_zh> ?x } UNION { ?y <http://zcy.ckcest.cn/tcm/dis/wm/property#dis_wm_basic.name_zh> ?x } } }";
+        String query = "SELECT ?x WHERE {?y <http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name> ?x. ?y <http://zcy.ckcest.cn/tcm/pre/property#pre_function.treat> ?z. FILTER regex(?z, '浮肿' ).}";
         QueryExecution qe = QueryExecutionFactory.create(query, model);
         ResultSet results = qe.execSelect();
         while(results.hasNext()) {

@@ -124,8 +124,8 @@ public class ClassifierSets {
         try {
             int result = WekaTools.classifyPreProperty(instance);
             if(result == 0) {
-                System.out.println("治疗");
-                question.setAnswerType("治疗");
+                System.out.println("主治");
+                question.setAnswerType("主治");
             } else if(result == 1) {
                 System.out.println("功效");
                 question.setAnswerType("功效");
