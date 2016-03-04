@@ -200,10 +200,21 @@ public class QueryGenerator {
                 System.out.println("症状描述词" + treatDes.size() + "个");
                 // 生成第一个查询SPARQL，方剂主治{描述}
                 Answer answer = new Answer();
-                answer.setDescription("以下方剂主治以上症状");
+                answer.setDescription("以下方剂主治上述症状");
                 String query = "SELECT ?x WHERE {?y <http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name> ?x. ?y <http://zcy.ckcest.cn/tcm/pre/property#pre_function.treat> ?z.";
                 for(String t : treatDes) {
                     query += " FILTER regex(?z, '" + t + "' ).";
+                }
+                query += "}";
+                answer.setQuery(query);
+                answer.setParam(new String[]{"x"});
+                question.getAnswers().add(answer);
+                // 生成第二个查询SPARQL，方剂治疗疾病{症状}
+                answer = new Answer();
+                answer.setDescription("以下方剂治疗上述症状");
+                query = "SELECT ?x WHERE {?y <http://zcy.ckcest.cn/tcm/pre/property#pre_basic.name> ?x. ?y <http://zcy.ckcest.cn/tcm/relation#treats> ?z. ?z <http://zcy.ckcest.cn/tcm/dis/tcm/property#dis_diagnosis.symptom> ?t.";
+                for(String t : treatDes) {
+                    query += " FILTER regex(?t, '" + t + "' ).";
                 }
                 query += "}";
                 answer.setQuery(query);
