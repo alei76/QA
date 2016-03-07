@@ -40,7 +40,6 @@ public class SpecificDic {
             BufferedReader br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR + "dic/wh_vocabulary.txt");
             String line = "";
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
                 whDic.add(line);
             }
             br = FileIO.getBufferedReader(Const.RESOURCE_BASE_DIR  + "dic/trivial_vocabulary.txt");

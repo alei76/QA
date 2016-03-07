@@ -3,6 +3,7 @@ package com.tcm.controller;
 import com.jfinal.core.Controller;
 import com.tcm.po.Question;
 import com.tcm.service.*;
+import com.tcm.util.Const;
 
 /**
  * Created by azurexsyl on 2015/6/28.
@@ -13,7 +14,8 @@ public class HomeController extends Controller{
      * 返回主页
      */
     public void index() {
-        renderJsp("index.jsp");
+        System.out.println(Const.RESOURCE_BASE_DIR);
+        render("index.html");
     }
 
     /***

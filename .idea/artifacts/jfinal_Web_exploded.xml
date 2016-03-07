@@ -5,8 +5,8 @@
       <element id="javaee-facet-resources" facet="jfinal/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="javaee-facet-classes" facet="jfinal/web/Web" />
           <element id="module-output" name="jfinal" />
+          <element id="dir-copy" path="$PROJECT_DIR$/resources" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="module" name="libs" module-name="jfinal" />

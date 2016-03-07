@@ -16,7 +16,6 @@ public class QAConfig extends JFinalConfig {
     public void configConstant(Constants me) {
         me.setDevMode(true);
         me.setViewType(ViewType.JSP);
-        //me.setBaseViewPath("/");
     }
 
     @Override
